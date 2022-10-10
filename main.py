@@ -28,8 +28,10 @@ async def on_message(message):
     if client.user.mentioned_in(message):
         await tree.sync()
 
+
+
 @tasks.loop(seconds=420)
-async def statuschannel(	self):
+async def statuschannel(self):
     server = MinecraftServer.lookup("play.thepolygon.tk:25599")
     #server status thingy
     statuscha = client.get_channel(1002095147779117167)
@@ -40,6 +42,14 @@ async def statuschannel(	self):
     except:
         await statuscha.edit(name="🔴 Offline")
 
+@tree.command(description="Syncs tree (ADMINS ONLY)")
+async def sync(i: Interaction):
+	try:
+		await tree.sync()
+		await i.response.send_message("Successfully synced tree!")
+	except:
+		await i.response.send_message("Could not sync tree.")
+	
 
 @tree.command(description="Returns nether or overworld equivalent of coords")
 @app_commands.describe(dimension='Dimension to convert to')
