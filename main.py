@@ -29,7 +29,6 @@ async def on_message(message):
         await tree.sync()
 
 
-
 @tasks.loop(seconds=420)
 async def statuschannel(self):
     server = MinecraftServer.lookup("play.thepolygon.tk:25599")
@@ -37,19 +36,22 @@ async def statuschannel(self):
     statuscha = client.get_channel(1002095147779117167)
     try:
         status = await server.async_status()
-        if statuscha.name != "🟢 Online: {0}/{1}".format(status.players.online, status.players.max):
-            await statuscha.edit(name="🟢 Online: {0}/{1}".format(status.players.online, status.players.max))
+        if statuscha.name != "🟢 Online: {0}/{1}".format(
+                status.players.online, status.players.max):
+            await statuscha.edit(name="🟢 Online: {0}/{1}".format(
+                status.players.online, status.players.max))
     except:
         await statuscha.edit(name="🔴 Offline")
 
+
 @tree.command(description="Syncs tree (ADMINS ONLY)")
 async def sync(i: Interaction):
-	try:
-		await tree.sync()
-		await i.response.send_message("Successfully synced tree!")
-	except:
-		await i.response.send_message("Could not sync tree.")
-	
+    try:
+        await tree.sync()
+        await i.response.send_message("Successfully synced tree!")
+    except:
+        await i.response.send_message("Could not sync tree.")
+
 
 @tree.command(description="Returns nether or overworld equivalent of coords")
 @app_commands.describe(dimension='Dimension to convert to')
@@ -57,15 +59,20 @@ async def sync(i: Interaction):
     app_commands.Choice(name='Nether', value=1),
     app_commands.Choice(name='Overworld', value=2),
 ])
-async def portalsync(i: Interaction, dimension: int, x: float, y: float, z: float):
+async def portalsync(i: Interaction, dimension: int, x: float, y: float,
+                     z: float):
     if dimension == 1:
         x = Decimal(x) / Decimal(8)
         z = Decimal(z) / Decimal(8)
-        await i.response.send_message(f"{str(x.quantize(0, ROUND_HALF_UP))}, {str(y)}, {str(z.quantize(0, ROUND_HALF_UP))}", ephemeral=True)
+        await i.response.send_message(
+            f"{str(x.quantize(0, ROUND_HALF_UP))}, {str(y)}, {str(z.quantize(0, ROUND_HALF_UP))}",
+            ephemeral=True)
     if dimension == 2:
         x = x * 8
         z = z * 8
-        await i.response.send_message(f"{str(x.quantize(0, ROUND_HALF_UP))}, {str(y)}, {str(z.quantize(0, ROUND_HALF_UP))}", ephemeral=True)
+        await i.response.send_message(
+            f"{str(x.quantize(0, ROUND_HALF_UP))}, {str(y)}, {str(z.quantize(0, ROUND_HALF_UP))}",
+            ephemeral=True)
 
 
 @tree.command(description="Returns the status of the server")
