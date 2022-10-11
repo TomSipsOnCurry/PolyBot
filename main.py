@@ -23,12 +23,6 @@ async def on_ready():
     print("------------------")
 
 
-@client.event
-async def on_message(message):
-    if client.user.mentioned_in(message):
-        await tree.sync()
-
-
 @tasks.loop(seconds=420)
 async def statuschannel(self):
     server = MinecraftServer.lookup("play.thepolygon.tk:25599")
