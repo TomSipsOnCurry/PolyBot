@@ -19,6 +19,10 @@ Returns skin, isometric render of skin and namemc profile.
 ### /faq [Faq name (String)]
 Returns faq information (Not functioning at the moment).
 
+## Additional features.
+### Status channel
+Changes a channel name to the amount of players online and the server status.
+
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
