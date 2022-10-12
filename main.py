@@ -103,28 +103,25 @@ async def serverstatus(int: Interaction):
         await int.response.send_message(embed=embed)
 
 
-@tree.command(
-    description=
-    "Returns Minecraft Java skin of argument given. (Bedrock skins coming soon!)"
-)
-async def skin(int: Interaction, username: str):
-    arg = username
-    async with aiohttp.ClientSession() as session:
-        async with session.get(
-                'https://api.mojang.com/users/profiles/minecraft/' + arg) as r:
-            if len(arg) < 4:
-                return
-            js = await r.json()
-            embed = discord.Embed(title="", color=0x1ABB9B)
-            embed.set_author(name=js["name"] + "'s skin",
-                             url='https://namemc.com/profile/' + js["name"],
-                             icon_url='https://mc-heads.net/avatar/' +
-                             js["id"])
-            embed.set_thumbnail(url='https://mc-heads.net/skin/' + arg)
-            embed.set_image(url="https://mc-heads.net/body/" + js["id"])
-            embed.set_footer(text="Information requested by: {}".format(
-                int.user.display_name))
-            await int.response.send_message(embed=embed)
+@tree.command(description="Returns Minecraft Java skin of argument given.")
+@app_commands.describe(version='Dimension to convert to')
+@app_commands.choices(version=[
+    app_commands.Choice(name='Java', value=1),
+    app_commands.Choice(name='Bedrock', value=2),
+])
+async def skin(int: Interaction, version: int, username: str):
+    embed = discord.Embed(title="", color=0x1ABB9B)
+    if version.value == 1:
+        embed.set_author(name=username + "'s skin",url='https://namemc.com/profile/' + username, icon_url='https://api.creepernation.xyz/avatar/' + username)
+        embed.set_thumbnail(url='https://mc-heads.net/skin/' + arg)
+        embed.set_image(url="https://api.creepernation.xyz/body/" + username)
+        embed.set_footer(text="Information requested by: {}".format(int.user.display_name))
+    if version.value == 2:
+        embed.set_author(name=username + "'s skin"+ username, icon_url='https://api.creepernation.xyz/avatar/' + username)
+        #embed.set_thumbnail(url='https://mc-heads.net/skin/' + arg)
+        embed.set_image(url="https://api.creepernation.xyz/body/" + username)
+        embed.set_footer(text="Information requested by: {}".format(int.user.display_name))    
+    await int.response.send_message(embed=embed)
 
 
 @tree.command()
