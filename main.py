@@ -13,11 +13,14 @@ from discord.ext import tasks
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
+server = JavaServer.lookup(info["ip"])
+
+with open("info.json") as j:
+    info = json.load(j)
 
 @tasks.loop(seconds=420)
 async def statuschannel(self):
-    server = JavaServer.lookup("play.thepolygon.tk:25599")
-    #server status thingy
+    #gets the channel to change
     statuscha = client.get_channel(1002095147779117167)
     try:
         status = await server.async_status()
@@ -54,56 +57,44 @@ async def sync(i: Interaction):
     app_commands.Choice(name='Nether', value=1),
     app_commands.Choice(name='Overworld', value=2),
 ])
-async def portalsync(i: Interaction, dimension: int, x: float, y: float,
-                     z: float):
+async def portalsync(i: Interaction, dimension: int, x: float, y: float, z: float):
     if dimension == 1:
         x = Decimal(x) / Decimal(8)
         z = Decimal(z) / Decimal(8)
-        await i.response.send_message(
-            f"{str(x.quantize(0, ROUND_HALF_UP))}, {str(y)}, {str(z.quantize(0, ROUND_HALF_UP))}",
-            ephemeral=True)
     if dimension == 2:
         x = x * 8
         z = z * 8
-        await i.response.send_message(
-            f"{str(x.quantize(0, ROUND_HALF_UP))}, {str(y)}, {str(z.quantize(0, ROUND_HALF_UP))}",
-            ephemeral=True)
+    await i.response.send_message(f"{str(x.quantize(0, ROUND_HALF_UP))}, {str(y)}, {str(z.quantize(0, ROUND_HALF_UP))}", ephemeral=True)
 
 
 @tree.command(description="Returns the status of the server")
-async def serverstatus(int: Interaction):
+async def serverstatus(i: Interaction):
     try:
-        server = JavaServer.lookup("play.thepolygon.tk:25599")
-        status = server.status()
+        status = server.async_status()
         print(status)
-        if status.players.online > 0:
-            players = status.players.sample
-            print(players)
-            print(status.players.online)
-            playerlist = []
-            for x in range(len(players)):
-                playerlist.append(players[x].name)
-            playerlist = "\n    ".join(playerlist)
-            embed = discord.Embed(title="Server Status:", color=0x1ABB9B)
-            embed.add_field(name="play.thepolygon.tk:25595 ",
-                            value="**Version: **" + status.version.name +
-                            "\n **Players**: {0}/{1}".format(
-                                status.players.online, status.players.max) +
-                            "\n **Player List**:\n {0}".format(playerlist))
-            embed.set_footer(text="Information requested by: {0}".format(
-                int.user.display_name))
-            await int.response.send_message(embed=embed)
-        elif status.players.online == 0:
-            embed = discord.Embed(title="Server Status:", color=0x1ABB9B)
-            embed.add_field(name="play.thepolygon.tk:25595 ",
-                            value="**Version: **" + status.version.name +
-                            "\n **Players**: 0/7")
-            embed.set_footer(text="Information requested by: {0}".format(
-                int.user.display_name))
-            await int.response.send_message(embed=embed)
+        players = status.players.sample
+        print(players)
+        print(status.players.online)
+        playerlist = []
+        for x in range(len(players)):
+            playerlist.append(players[x].name)
+        playerlist = "\n    ".join(playerlist)
+        embed = discord.Embed(
+            title="Server Status:", color=0x1ABB9B
+        )
+        embed.add_field(
+            name="play.thepolygon.tk:25595 ",
+            value="**Version: **" + status.version.name + f"\n **Players**: {status.players.online}/{status.players.max}" + f"\n **Player List**:\n {playerlist}"
+        )
+        embed.set_footer(
+            text="Information requested by: {i.user.display_name}"
+        )
     except:
-        embed = discord.Embed(title="Server Status: Offline", color=0xF63E36)
-        await int.response.send_message(embed=embed)
+        embed = discord.Embed(
+            title="Server Status: Offline",
+            color=0xF63E36
+        )
+    await i.response.send_message(embed=embed)
 
 
 @tree.command(description="Returns Minecraft Java skin of argument given.")
@@ -112,30 +103,51 @@ async def serverstatus(int: Interaction):
     app_commands.Choice(name='Java', value=1),
     app_commands.Choice(name='Bedrock', value=2),
 ])
-async def skin(int: Interaction, version: int, username: str):
+async def skin(i: Interaction, version: int, username: str):
     embed = discord.Embed(title="", color=0x1ABB9B)
     if version == 1:
-        embed.set_author(name=username + "'s skin",url='https://namemc.com/profile/' + username, icon_url='https://api.creepernation.xyz/avatar/' + username)
-        embed.set_thumbnail(url='https://mc-heads.net/skin/' + username)
-        embed.set_image(url="https://api.creepernation.xyz/body/" + username)
-        embed.set_footer(text="Information requested by: {}".format(int.user.display_name))
+        embed.set_author(
+            name=username + "'s skin",
+            url='https://namemc.com/profile/' + username, 
+            icon_url='https://api.creepernation.xyz/avatar/' + username
+        )
+        embed.set_thumbnail(
+            url='https://mc-heads.net/skin/' + username
+        )
+        embed.set_image(
+            url="https://api.creepernation.xyz/body/" + username
+        )
+        embed.set_footer(
+            text=f"Information requested by: {i.user.display_name}"
+        )
     if version == 2:
-        embed.set_author(name=username + "'s skin", icon_url='https://api.creepernation.xyz/avatar/' + username + "/bedrock")
+        embed.set_author(
+            name=username + "'s skin",
+            icon_url='https://api.creepernation.xyz/avatar/' + username + "/bedrock"
+        )
         #embed.set_thumbnail(url='https://mc-heads.net/skin/' + username)
-        embed.set_image(url="https://api.creepernation.xyz/body/" + username + "/bedrock")
-        embed.set_footer(text="Information requested by: {}".format(int.user.display_name))    
+        embed.set_image(
+            url="https://api.creepernation.xyz/body/" + username + "/bedrock"
+        )
+        embed.set_footer(
+            text="Information requested by: {}".format(i.user.display_name)
+        )    
     await int.response.send_message(embed=embed)
 
 
 @tree.command()
 async def join(int: Interaction):
     embed = discord.Embed(title="**How to join The Polygon**", color=0x1ABB9B)
-    embed.add_field(name="Java IP:",
-                    value="```ip: play.thepolygon.tk:25595```",
-                    inline=True)
-    embed.add_field(name="Bedrock IP:",
-                    value="```ip: play.thepolygon.tk ```\n```port:25595```",
-                    inline=True)
+    embed.add_field(
+        name="Java IP:",
+        value="```ip: play.thepolygon.tk:25595```",
+        inline=True
+    )    
+    embed.add_field(
+        name="Bedrock IP:",
+        value="```ip: play.thepolygon.tk ```\n```port:25595```",
+        inline=True
+    )
     await int.response.send_message(embed=embed)
 
 
@@ -146,17 +158,22 @@ async def about(int: Interaction):
         description=
         "A bot loved and developed by <@538126187231313940>, made for The Polygon. Developed using Discord.py.",
         color=0x1ABB9B)
-    embed.add_field(name="Command list:", value="```!help```", inline=True)
-    embed.add_field(name="Command details:",
-                    value="```!help <command>```",
-                    inline=True)
+    embed.add_field(
+        name="Command list:", value="```!help```",
+        inline=True
+    )
+    embed.add_field(
+        name="Command details:",
+        value="```!help <command>```",
+        inline=True
+    )
     embed.set_author(
         name="Polybot",
-        icon_url=
-        "https://cdn.discordapp.com/attachments/838602121745268756/846266695449706496/download_1.png"
+        icon_url="https://cdn.discordapp.com/attachments/838602121745268756/846266695449706496/download_1.png"
     )
     embed.set_footer(
-        text="Information requested by: {}".format(int.user.display_name))
+        text="Information requested by: {}".format(int.user.display_name)
+    )
     await int.response.send_message(embed=embed)
 
 
@@ -166,7 +183,7 @@ async def faq(int: Interaction, arg: str):
         #opens the faq.json file
         with open("faq.json") as faq:
             data = json.load(faq)
-#grabs the url of the faq message with the argument
+        #grabs the url of the faq message with the argument
         faqurl = data[arg][0]["url"]
         #fetches everything after the last / which is the message id
         faqid = faqurl[faqurl.rfind("/") + 1:]
@@ -212,6 +229,5 @@ async def faq(int: Interaction, arg: str):
     except:
         embed + discord.Embed(title="Could not find that faq")
         await int.send(embed=embed)
-with open("sensitive.json") as j:
-    sInfo = json.load(j)
-client.run(sInfo["token"])
+
+client.run(info["token"])
