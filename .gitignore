@@ -2,6 +2,8 @@
 
 /.breakpoints
 
+/sensitive.json
+
 /keep_alive.py
 
 /poetry.lock

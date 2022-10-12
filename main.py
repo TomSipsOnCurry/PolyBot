@@ -1,11 +1,9 @@
-import os
 import discord
 import json
 import aiohttp
 import mcstatus
 import time
-from keep_alive import keep_alive
-from mcstatus import MinecraftServer
+from mcstatus import JavaServer
 from decimal import Decimal, ROUND_HALF_UP
 
 from discord import app_commands, Interaction, Client
@@ -25,7 +23,7 @@ async def on_ready():
 
 @tasks.loop(seconds=420)
 async def statuschannel(self):
-    server = MinecraftServer.lookup("play.thepolygon.tk:25599")
+    server = JavaServer.lookup("play.thepolygon.tk:25599")
     #server status thingy
     statuscha = client.get_channel(1002095147779117167)
     try:
@@ -72,7 +70,7 @@ async def portalsync(i: Interaction, dimension: int, x: float, y: float,
 @tree.command(description="Returns the status of the server")
 async def serverstatus(int: Interaction):
     try:
-        server = MinecraftServer.lookup("play.thepolygon.tk:25599")
+        server = JavaServer.lookup("play.thepolygon.tk:25599")
         status = server.status()
         print(status)
         if status.players.online > 0:
@@ -214,7 +212,6 @@ async def faq(int: Interaction, arg: str):
     except:
         embed + discord.Embed(title="Could not find that faq")
         await int.send(embed=embed)
-
-keep_alive()
-token = os.environ['token']
-client.run(token)
+with open("sensitive.json") as j:
+    sInfo = json.load(j)
+client.run(sInfo["token"])
