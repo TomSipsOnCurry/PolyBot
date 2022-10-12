@@ -122,7 +122,7 @@ async def skin(int: Interaction, version: int, username: str):
         embed.set_image(url="https://api.creepernation.xyz/body/" + username)
         embed.set_footer(text="Information requested by: {}".format(int.user.display_name))
     if version == 2:
-        embed.set_author(name=username + "'s skin", icon_url='https://api.creepernation.xyz/avatar/' + username)
+        embed.set_author(name=username + "'s skin", icon_url='https://api.creepernation.xyz/avatar/' + username + "/bedrock")
         #embed.set_thumbnail(url='https://mc-heads.net/skin/' + username)
         embed.set_image(url="https://api.creepernation.xyz/body/" + username + "/bedrock")
         embed.set_footer(text="Information requested by: {}".format(int.user.display_name))    
