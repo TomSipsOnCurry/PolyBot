@@ -157,7 +157,8 @@ async def about(int: Interaction):
         title="**The official bot of The Polygon!**",
         description=
         "A bot loved and developed by <@538126187231313940>, made for The Polygon. Developed using Discord.py.",
-        color=0x1ABB9B)
+        color=0x1ABB9B
+    )
     embed.add_field(
         name="Command list:", value="```!help```",
         inline=True
@@ -216,14 +217,16 @@ async def faq(int: Interaction, arg: str):
                               url=faqurl,
                               description=answer,
                               color=0x1ABB9B)
-        embed.set_author(name=author,
-                         icon_url="https://mc-heads.net/avatar/" + playername)
-        embed.set_thumbnail(
-            url=
-            "https://cdn.discordapp.com/attachments/841604606743281675/846279752838283264/FAQ.png"
+        embed.set_author(
+            name=author,
+            icon_url="https://mc-heads.net/avatar/" + playername
         )
-        embed.set_footer(text="Information requested by: {}".format(
-            int.author.display_name))
+        embed.set_thumbnail(
+            url="https://cdn.discordapp.com/attachments/841604606743281675/846279752838283264/FAQ.png"
+        )
+        embed.set_footer(
+            text=f"Information requested by: {int.author.display_name}"
+        )
         #sends the embed
         await int.send(embed=embed)
     except:
