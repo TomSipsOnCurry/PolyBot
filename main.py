@@ -14,14 +14,6 @@ intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
-
-@client.event
-async def on_ready():
-    print("------------------")
-    print('| bot is ready!! |')
-    print("------------------")
-
-
 @tasks.loop(seconds=420)
 async def statuschannel(self):
     server = JavaServer.lookup("play.thepolygon.tk:25599")
@@ -33,13 +25,19 @@ async def statuschannel(self):
             await statuscha.edit(name="🟢 Online: {0}/{1}".format(status.players.online, status.players.max))    
     except:
         await statuscha.edit(name="🔴 Offline")
-        
-statuschannel.start()
+
+@client.event
+async def on_ready():
+    print("------------------")
+    print('| bot is ready!! |')
+    print("------------------")
+    statuschannel.start()
 
 @tree.command(description="Restarts bot and pulls changes")
 async def restart(i: Interaction):
     await client.close()
-    subprocess.call([r'run.bat'])
+    await subprocess.call([r'run.bat'])
+    process.terminate()
 
 @tree.command(description="Syncs tree (ADMINS ONLY)")
 async def sync(i: Interaction):
