@@ -111,12 +111,12 @@ async def serverstatus(int: Interaction):
 ])
 async def skin(int: Interaction, version: int, username: str):
     embed = discord.Embed(title="", color=0x1ABB9B)
-    if version.value == 1:
+    if version. == 1:
         embed.set_author(name=username + "'s skin",url='https://namemc.com/profile/' + username, icon_url='https://api.creepernation.xyz/avatar/' + username)
         embed.set_thumbnail(url='https://mc-heads.net/skin/' + arg)
         embed.set_image(url="https://api.creepernation.xyz/body/" + username)
         embed.set_footer(text="Information requested by: {}".format(int.user.display_name))
-    if version.value == 2:
+    if version == 2:
         embed.set_author(name=username + "'s skin"+ username, icon_url='https://api.creepernation.xyz/avatar/' + username)
         #embed.set_thumbnail(url='https://mc-heads.net/skin/' + arg)
         embed.set_image(url="https://api.creepernation.xyz/body/" + username)
