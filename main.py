@@ -38,7 +38,7 @@ async def statuschannel(self):
 
 @tree.command(description="Restarts bot and pulls changes")
 async def restart(i: Interaction):
-    subprocess.call([r'D:\tjoy0\My Documents\GitHub\PolyBot\run.bat'])
+    subprocess.call([r'C:\Users\User\Documents\GitHub\PolyBot\run.bat'])
     client.close()
 
 @tree.command(description="Syncs tree (ADMINS ONLY)")

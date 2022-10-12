@@ -4,6 +4,8 @@
 
 /sensitive.json
 
+/run.bat
+
 /keep_alive.py
 
 /poetry.lock
