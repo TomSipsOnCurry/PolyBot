@@ -19,11 +19,12 @@ tree = app_commands.CommandTree(client)
 server = JavaServer.lookup(info["ip"])
 
 
-@tasks.loop(seconds=420)
+@tasks.loop(seconds=10)
 async def statuschannel():
     statuscha = client.get_channel(1002095147779117167)
     status = await server.async_status()
     #gets the channel to change
+    print("done")
     if statuscha.name != "🟢 Online: {0}/{1}".format(status.players.online, status.players.max):
         await statuscha.edit(name="🟢 Online: {0}/{1}".format(status.players.online, status.players.max))    
 
