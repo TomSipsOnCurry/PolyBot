@@ -33,7 +33,11 @@ async def on_ready():
     print("------------------")
     print('| bot is ready!! |')
     print("------------------")
-    statuschannel.start()
+    
+class PolyBot(commands.Bot):
+    async def setup_hook(self):
+        print("Bot is starting")
+        statuschannel.start()
 
 @tree.command(description="Restarts bot and pulls changes")
 async def restart(i: Interaction):
