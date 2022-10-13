@@ -14,7 +14,7 @@ with open("info.json") as j:
     info = json.load(j)
 
 intents = discord.Intents.default()
-client = discord.Client(intents=intents)
+client = PolyBot(intents=intents)
 tree = app_commands.CommandTree(client)
 server = JavaServer.lookup(info["ip"])
 
