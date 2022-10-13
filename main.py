@@ -34,7 +34,7 @@ async def on_ready():
     print('| bot is ready!! |')
     print("------------------")
     
-class PolyBot(commands.Bot):
+class PolyBot(discord.Client):
     async def setup_hook(self):
         print("Bot is starting")
         statuschannel.start()
