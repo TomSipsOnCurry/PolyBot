@@ -21,9 +21,9 @@ server = JavaServer.lookup(info["ip"])
 
 @tasks.loop(seconds=420)
 async def statuschannel():
-    #gets the channel to change
     statuscha = client.get_channel(1002095147779117167)
     status = await server.async_status()
+    #gets the channel to change
     if statuscha.name != "🟢 Online: {0}/{1}".format(status.players.online, status.players.max):
         await statuscha.edit(name="🟢 Online: {0}/{1}".format(status.players.online, status.players.max))    
 
@@ -131,7 +131,7 @@ async def skin(i: Interaction, version: int, username: str):
         embed.set_footer(
             text="Information requested by: {}".format(i.user.display_name)
         )    
-    await int.response.send_message(embed=embed)
+    await i.response.send_message(embed=embed)
 
 
 @tree.command()
