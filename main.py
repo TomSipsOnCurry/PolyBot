@@ -23,12 +23,10 @@ server = JavaServer.lookup(info["ip"])
 async def statuschannel():
     #gets the channel to change
     statuscha = client.get_channel(1002095147779117167)
-    try:
-        status = await server.async_status()
-        if statuscha.name != "🟢 Online: {0}/{1}".format(status.players.online, status.players.max):
-            await statuscha.edit(name="🟢 Online: {0}/{1}".format(status.players.online, status.players.max))    
-    except:
-        await statuscha.edit(name="🔴 Offline")
+    status = await server.async_status()
+    if statuscha.name != "🟢 Online: {0}/{1}".format(status.players.online, status.players.max):
+        await statuscha.edit(name="🟢 Online: {0}/{1}".format(status.players.online, status.players.max))    
+
 
 @client.event
 async def on_ready():
