@@ -20,7 +20,7 @@ server = JavaServer.lookup(info["ip"])
 
 
 @tasks.loop(seconds=420)
-async def statuschannel(self):
+async def statuschannel():
     #gets the channel to change
     statuscha = client.get_channel(1002095147779117167)
     try:
