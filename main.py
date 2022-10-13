@@ -10,13 +10,14 @@ from decimal import Decimal, ROUND_HALF_UP
 from discord import app_commands, Interaction, Client
 from discord.ext import tasks
 
+with open("info.json") as j:
+    info = json.load(j)
+
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 server = JavaServer.lookup(info["ip"])
 
-with open("info.json") as j:
-    info = json.load(j)
 
 @tasks.loop(seconds=420)
 async def statuschannel(self):
