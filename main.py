@@ -1,6 +1,7 @@
 import discord
 import json
 import aiohttp
+import asyncio
 import mcstatus
 import time
 import subprocess
@@ -13,20 +14,29 @@ from discord.ext import tasks
 with open("info.json") as j:
     info = json.load(j)
 
+class PolyBot(discord.Client):
+    async def setup_hook(self):
+        print("Bot is starting")
+        statuschannel.start()
+        
 intents = discord.Intents.default()
 client = PolyBot(intents=intents)
 tree = app_commands.CommandTree(client)
 server = JavaServer.lookup(info["ip"])
 
 
-@tasks.loop(seconds=10)
+@tasks.loop(seconds=420)
 async def statuschannel():
     statuscha = client.get_channel(1002095147779117167)
     status = await server.async_status()
     #gets the channel to change
-    print("done")
-    if statuscha.name != "🟢 Online: {0}/{1}".format(status.players.online, status.players.max):
-        await statuscha.edit(name="🟢 Online: {0}/{1}".format(status.players.online, status.players.max))    
+    if statuscha.name != "🟢 Online: {0}/7".format(status.players.online, status.players.max):
+        await statuscha.edit(name="🟢 Online: {0}/7".format(status.players.online, status.players.max))
+        print("done")
+        
+@statuschannel.before_loop
+async def before_statLoop():
+  await client.wait_until_ready()
 
 
 @client.event
@@ -34,17 +44,11 @@ async def on_ready():
     print("------------------")
     print('| bot is ready!! |')
     print("------------------")
-    
-class PolyBot(discord.Client):
-    async def setup_hook(self):
-        print("Bot is starting")
-        statuschannel.start()
 
-@tree.command(description="Restarts bot and pulls changes")
-async def restart(i: Interaction):
-    await client.close()
-    await subprocess.call([r'run.bat'])
-    process.terminate()
+#@tree.command(description="Restarts bot and pulls changes")
+#async def restart(i: Interaction):
+    #await subprocess.call([r'run.bat'])
+    #await client.close()
 
 @tree.command(description="Syncs tree (ADMINS ONLY)")
 async def sync(i: Interaction):
