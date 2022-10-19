@@ -22,13 +22,13 @@ class PolyBot(discord.Client):
 intents = discord.Intents.default()
 client = PolyBot(intents=intents)
 tree = app_commands.CommandTree(client)
-server = JavaServer.lookup(info["ip"])
+server = async async_lookup(info["ip"])
 
 
 @tasks.loop(seconds=420)
 async def statuschannel():
     statuscha = client.get_channel(1002095147779117167)
-    status = await server.async_status()
+    status = await server.status()
     #gets the channel to change
     if statuscha.name != "🟢 Online: {0}/7".format(status.players.online, status.players.max):
         await statuscha.edit(name="🟢 Online: {0}/7".format(status.players.online, status.players.max))
