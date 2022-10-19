@@ -22,7 +22,7 @@ class PolyBot(discord.Client):
 intents = discord.Intents.default()
 client = PolyBot(intents=intents)
 tree = app_commands.CommandTree(client)
-server = async async_lookup(info["ip"])
+server = mcstatus.lookup(info["ip"])
 
 
 @tasks.loop(seconds=420)
