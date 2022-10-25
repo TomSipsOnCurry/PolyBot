@@ -5,50 +5,52 @@ import asyncio
 import mcstatus
 import time
 import subprocess
+import importlib
 from mcstatus import JavaServer
 from decimal import Decimal, ROUND_HALF_UP
 
-from discord import app_commands, Interaction, Client
-from discord.ext import tasks
+from discord import app_commands, Interaction
+from discord.ext import tasks, commands
+from mcstatus import JavaServer
 
 with open("info.json") as j:
     info = json.load(j)
 
-class PolyBot(discord.Client):
+class Polybot(commands.Bot):
     async def setup_hook(self):
-        print("Bot is starting")
+        await self.load_extension('jishaku')
+        print("bot is starting")
         statuschannel.start()
         
 intents = discord.Intents.default()
-client = PolyBot(intents=intents)
-tree = app_commands.CommandTree(client)
-server = mcstatus.lookup(info["ip"])
+bot = Polybot(intents=intents, command_prefix=[])
+tree = bot.tree
+server = JavaServer.lookup(info["ip"])
 
 
 @tasks.loop(seconds=420)
 async def statuschannel():
-    statuscha = client.get_channel(1002095147779117167)
-    status = await server.status()
+    statuscha = bot.get_channel(1002095147779117167)
+    status = server.status()
     #gets the channel to change
-    if statuscha.name != "🟢 Online: {0}/7".format(status.players.online, status.players.max):
-        await statuscha.edit(name="🟢 Online: {0}/7".format(status.players.online, status.players.max))
+    if statuscha.name != "🟢 Online: {0}/7".format(status.players.online):
+        await statuscha.edit(name="🟢 Online: {0}/7".format(status.players.online))
         print("done")
         
 @statuschannel.before_loop
 async def before_statLoop():
-  await client.wait_until_ready()
+  await bot.wait_until_ready()
 
 
-@client.event
+@bot.event
 async def on_ready():
     print("------------------")
     print('| bot is ready!! |')
     print("------------------")
 
-#@tree.command(description="Restarts bot and pulls changes")
-#async def restart(i: Interaction):
-    #await subprocess.call([r'run.bat'])
-    #await client.close()
+@tree.command(description="Restarts bot and pulls changes")
+async def restart(i: Interaction):
+    importlib.reload(discord)
 
 @tree.command(description="Syncs tree (ADMINS ONLY)")
 async def sync(i: Interaction):
@@ -77,33 +79,35 @@ async def portalsync(i: Interaction, dimension: int, x: float, y: float, z: floa
 
 @tree.command(description="Returns the status of the server")
 async def serverstatus(i: Interaction):
+    status = server.status()
+    print(f"[INFO] {i.user.display_name} requested server status.")
     try:
-        status = server.async_status()
-        print(status)
-        players = status.players.sample
-        print(players)
-        print(status.players.online)
-        playerlist = []
-        for x in range(len(players)):
-            playerlist.append(players[x].name)
-        playerlist = "\n    ".join(playerlist)
-        embed = discord.Embed(
-            title="Server Status:", color=0x1ABB9B
-        )
-        embed.add_field(
-            name="play.thepolygon.tk:25595 ",
-            value="**Version: **" + status.version.name + f"\n **Players**: {status.players.online}/{status.players.max}" + f"\n **Player List**:\n {playerlist}"
-        )
-        embed.set_footer(
-            text="Information requested by: {i.user.display_name}"
-        )
+        if status.players.online > 0:
+            players = status.players.sample
+            playerlist = []
+            for x in range(len(players)):
+                playerlist.append(players[x].name)
+            playerlist = "\n    ".join(playerlist)
+            embed = discord.Embed(title="TEST   Server Status:", color=0x1ABB9B)
+            embed.add_field(name="play.thepolygon.tk:25595 ",
+                            value="**Version: **" + status.version.name +
+                            "\n **Players**: {0}/{1}".format(
+                                status.players.online, status.players.max) +
+                            "\n **Player List**:\n {0}".format(playerlist))
+            embed.set_footer(text="Information requested by: {0}".format(
+                i.user.display_name))
+            await i.response.send_message(embed=embed)
+        elif status.players.online == 0:
+            embed = discord.Embed(title="Server Status:", color=0x1ABB9B)
+            embed.add_field(name="play.thepolygon.tk:25595 ",
+                            value="**Version: **" + status.version.name +
+                            "\n **Players**: 0/7")
+            embed.set_footer(text="Information requested by: {0}".format(
+                i.user.display_name))
+            await i.response.send_message(embed=embed)
     except:
-        embed = discord.Embed(
-            title="Server Status: Offline",
-            color=0xF63E36
-        )
-    await i.response.send_message(embed=embed)
-
+        embed = discord.Embed(title="Server Status: Offline", color=0xF63E36)
+        await i.response.send_message(embed=embed)
 
 @tree.command(description="Returns Minecraft Java skin of argument given.")
 @app_commands.describe(version='Dimension to convert to')
@@ -199,7 +203,7 @@ async def faq(int: Interaction, arg: str):
         #gets the channel with the id
         faqid = int(faqid)
         id = 840471544739135499
-        channel = client.get_channel(id)
+        channel = bot.get_channel(id)
         #gets the message with the id
         faqmsg = await channel.fetch_message(faqid)
 
@@ -241,4 +245,4 @@ async def faq(int: Interaction, arg: str):
         embed + discord.Embed(title="Could not find that faq")
         await int.send(embed=embed)
 
-client.run(info["token"])
+bot.run(info["token"])
