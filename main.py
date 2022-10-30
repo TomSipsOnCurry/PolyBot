@@ -110,7 +110,7 @@ async def serverstatus(i: Interaction):
         await i.response.send_message(embed=embed)
 
 @tree.command(description="Returns Minecraft Java skin of argument given.")
-@app_commands.describe(version='Dimension to convert to')
+@app_commands.describe(version='Skin you want')
 @app_commands.choices(version=[
     app_commands.Choice(name='Java', value=1),
     app_commands.Choice(name='Bedrock', value=2),
@@ -143,8 +143,16 @@ async def skin(i: Interaction, version: int, username: str):
         )
         embed.set_footer(
             text="Information requested by: {}".format(i.user.display_name)
-        )    
-    await i.response.send_message(embed=embed)
+        )
+    try:
+        if len(username) < 3:
+            raise ValueError('Username too short')
+        await i.response.send_message(embed=embed)
+    except:
+        embed = discord.Embed(title="🛑 Skin does not exist or invalid syntax. If you believe this is an issue please contact admins.", color=0xF63E36)
+        await i.response.send_message(embed=embed)
+        
+
 
 
 @tree.command()
