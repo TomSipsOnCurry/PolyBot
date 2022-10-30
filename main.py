@@ -88,7 +88,7 @@ async def serverstatus(i: Interaction):
             for x in range(len(players)):
                 playerlist.append(players[x].name)
             playerlist = "\n    ".join(playerlist)
-            embed = discord.Embed(title="TEST   Server Status:", color=0x1ABB9B)
+            embed = discord.Embed(title="Server Status:", color=0x1ABB9B)
             embed.add_field(name="play.thepolygon.tk:25595 ",
                             value="**Version: **" + status.version.name +
                             "\n **Players**: {0}/{1}".format(
@@ -101,7 +101,7 @@ async def serverstatus(i: Interaction):
             embed = discord.Embed(title="Server Status:", color=0x1ABB9B)
             embed.add_field(name="play.thepolygon.tk:25595 ",
                             value="**Version: **" + status.version.name +
-                            "\n **Players**: 0/7")
+                            "\n **Players**: 0/10")
             embed.set_footer(text="Information requested by: {0}".format(
                 i.user.display_name))
             await i.response.send_message(embed=embed)
