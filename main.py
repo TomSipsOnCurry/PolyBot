@@ -197,12 +197,12 @@ async def about(int: Interaction):
         color=0x1ABB9B
     )
     embed.add_field(
-        name="Command list:", value="```!help```",
+        name="Command list:", value="```/help```",
         inline=True
     )
     embed.add_field(
         name="Command details:",
-        value="```!help <command>```",
+        value="```/help <command>```",
         inline=True
     )
     embed.set_author(
