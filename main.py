@@ -3,8 +3,6 @@ import json
 import aiohttp
 import asyncio
 import mcstatus
-import time
-import subprocess
 import importlib
 from mcstatus import JavaServer
 from decimal import Decimal, ROUND_HALF_UP
@@ -39,7 +37,7 @@ async def statuschannel():
         
 @statuschannel.before_loop
 async def before_statLoop():
-  await bot.wait_until_ready()
+    await bot.wait_until_ready()
 
 
 @bot.event
@@ -118,31 +116,50 @@ async def serverstatus(i: Interaction):
 async def skin(i: Interaction, version: int, username: str):
     embed = discord.Embed(title="", color=0x1ABB9B)
     if version == 1:
+        async with aiohttp.ClientSession() as session:
+            async with session.get('https://api.mojang.com/users/profiles/minecraft/' + username) as resp:
+                mApi = await resp.json()
+                UUID = mApi['id']
         embed.set_author(
             name=username + "'s skin",
             url='https://namemc.com/profile/' + username, 
-            icon_url='https://api.creepernation.xyz/avatar/' + username
+            icon_url='https://visage.surgeplay.com/face/' + UUID
         )
         embed.set_thumbnail(
-            url='https://mc-heads.net/skin/' + username
+            url='https://visage.surgeplay.com/skin/' + UUID
         )
         embed.set_image(
-            url="https://api.creepernation.xyz/body/" + username
+            url="https://visage.surgeplay.com/full/512/" + UUID
         )
         embed.set_footer(
             text=f"Information requested by: {i.user.display_name}"
         )
     if version == 2:
+        async with aiohttp.ClientSession() as session:
+            async with session.get('https://api.geysermc.org/v2/xbox/xuid/' + username) as resp:
+                fApi = await resp.json()
+                XUID = fApi['xuid']
+                async with session.get('https://api.geysermc.org/v2/skin/' + str(XUID)) as resp:
+                    tApi = await resp.json()
+                    tId = tApi['texture_id']
+                    isAlex = tApi['is_steve']
+                    if isAlex:
+                        isAlex = ""
+                    else:
+                        isAlex = "?alex"
+
         embed.set_author(
             name=username + "'s skin",
-            icon_url='https://api.creepernation.xyz/avatar/' + username + "/bedrock"
+            icon_url='https://visage.surgeplay.com/face/' + tId
         )
-        #embed.set_thumbnail(url='https://mc-heads.net/skin/' + username)
+        embed.set_thumbnail(
+            url='https://visage.surgeplay.com/skin/' + tId
+        )
         embed.set_image(
-            url="https://api.creepernation.xyz/body/" + username + "/bedrock"
+            url="https://visage.surgeplay.com/full/512/" + tId + isAlex
         )
         embed.set_footer(
-            text="Information requested by: {}".format(i.user.display_name)
+            text=f"Information requested by: {i.user.display_name}"
         )
     try:
         if len(username) < 3:
