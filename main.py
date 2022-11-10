@@ -177,12 +177,12 @@ async def join(int: Interaction):
     embed = discord.Embed(title="**How to join The Polygon**", color=0x1ABB9B)
     embed.add_field(
         name="Java IP:",
-        value="```ip: play.thepolygon.tk:25595```",
+        value="```ip: play.thepolygon.tk```",
         inline=True
     )    
     embed.add_field(
         name="Bedrock IP:",
-        value="```ip: play.thepolygon.tk ```\n```port:25595```",
+        value="```ip: play.thepolygon.tk ```\n```port:25599```",
         inline=True
     )
     await int.response.send_message(embed=embed)
