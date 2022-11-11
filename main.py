@@ -126,8 +126,11 @@ async def skin(i: Interaction, version: int, username: str):
                 texture = resp["properties"][0]["value"]
                 texture = base64.b64decode(texture)
                 a = json.loads(texture)
-                isSlim = a["textures"]["SKIN"]["url"]
-                id = a["textures"]["SKIN"]["metadata"]["model"]
+                id = a["textures"]["SKIN"]["url"][38:]
+                try:
+                    isSlim = a["textures"]["SKIN"]["metadata"]["model"]
+                except:
+                    isSlim = ""
                 if isSlim == "slim":
                     isSlim = "?alex"
                 else:
