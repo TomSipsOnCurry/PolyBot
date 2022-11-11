@@ -126,7 +126,13 @@ async def skin(i: Interaction, version: int, username: str):
                 texture = resp["properties"][0]["value"]
                 texture = base64.b64decode(texture)
                 a = json.loads(texture)
-                id = a["textures"]["SKIN"]["url"][38:]
+                isSlim = a["textures"]["SKIN"]["url"]
+                id = a["textures"]["SKIN"]["metadata"]["model"]
+                if isSlim == "slim":
+                    isSlim = "?alex"
+                else:
+                    isSlim = ""
+
         embed.set_author(
             name = username + "'s skin",
             url='https://namemc.com/profile/' + username, 
@@ -136,7 +142,7 @@ async def skin(i: Interaction, version: int, username: str):
             url=f'https://visage.surgeplay.com/skin/{id}'
         )
         embed.set_image(
-            url=f"https://visage.surgeplay.com/full/512/{id}"
+            url=f"https://visage.surgeplay.com/full/512/{id}{isSlim}"
         )
         embed.set_footer(
             text=f"Information requested by: {i.user.display_name}"
