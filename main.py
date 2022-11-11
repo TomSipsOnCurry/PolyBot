@@ -3,6 +3,7 @@ import json
 import aiohttp
 import asyncio
 import mcstatus
+import base64
 import importlib
 from mcstatus import JavaServer
 from decimal import Decimal, ROUND_HALF_UP
@@ -120,16 +121,22 @@ async def skin(i: Interaction, version: int, username: str):
             async with session.get('https://api.mojang.com/users/profiles/minecraft/' + username) as resp:
                 mApi = await resp.json()
                 UUID = mApi['id']
+            async with session.get('https://sessionserver.mojang.com/session/minecraft/profile/' + UUID) as resp:
+                resp = await resp.json()
+                texture = resp["properties"][0]["value"]
+                texture = base64.b64decode(texture)
+                a = json.loads(texture)
+                id = a["textures"]["SKIN"]["url"][38:]
         embed.set_author(
-            name=username + "'s skin",
+            name = username + "'s skin",
             url='https://namemc.com/profile/' + username, 
-            icon_url='https://visage.surgeplay.com/face/' + UUID
+            icon_url=f'https://visage.surgeplay.com/face/{id}'
         )
         embed.set_thumbnail(
-            url='https://visage.surgeplay.com/skin/' + UUID
+            url=f'https://visage.surgeplay.com/skin/{id}'
         )
         embed.set_image(
-            url="https://visage.surgeplay.com/full/512/" + UUID
+            url=f"https://visage.surgeplay.com/full/512/{id}"
         )
         embed.set_footer(
             text=f"Information requested by: {i.user.display_name}"
