@@ -1,2 +1,3 @@
 git pull
-main.py
+
+py main.py
