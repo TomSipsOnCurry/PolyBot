@@ -25,5 +25,5 @@ Changes a channel name to the amount of players online and the server status.
 
 
 ## License
-[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
-I'm a small developer, so I only ask that you give credit, apply the same license and distrubute the editted work for free.
+[GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)
+I'm a small developer, so I only ask that you give credit and apply the same license.
