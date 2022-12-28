@@ -14,7 +14,7 @@ Returns the java and bedrock ip for The Polygon.
 Syncs the tree (Developer Only)
 ### /portalsync [Dimension (Nether/Overworld)] [x value (integer)] [y value (integer)] [z value (integer)]
 Returns the coordinate equivalent in the specified dimension (Command and message can only be seen by you).
-### /skin [Username (Minecraft Java username)]
+### /skin [Bedrock/Java] [Username]
 Returns skin, isometric render of skin and namemc profile.
 ### /faq [Faq name (String)]
 Returns faq information (Not functioning at the moment).
